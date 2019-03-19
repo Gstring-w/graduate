@@ -1,23 +1,15 @@
-var app = require("http").createServer(handler);
-var io = require("socket.io")(app);
-var fs = require("fs");
+const app = require("express")();
+const server = require("http").Server(app);
+const messageService = require("./service/messageService");
+const web = require("./web");
 
-app.listen(80);
+//启动webSocket
+messageService(server);
 
-function handler(req, res) {
-  res.writeHead(200);
-  res.end();
-}
+// 数据接口
 
-io.on("connection", function(socket) {
-  //学生
-  socket.on("message-student", function(data) {
-    console.log(data);
-    io.emit("message", { roly: "student", data: data });
-  });
-  //老师发给学生
-  socket.on("message-teacher", function(data) {
-    console.log(data);
-    io.emit("message", { roly: "teacher", data: data });
-  });
+app.post("/login", web.loginWeb);
+
+app.listen(80, () => {
+  console.log("毕业系统后端已启动！");
 });
