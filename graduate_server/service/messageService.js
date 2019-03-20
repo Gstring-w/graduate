@@ -1,24 +1,32 @@
+const connectionMysql = require("../dao/connectionMysql");
+
 function messageService(app) {
-  var io = require("socket.io")(app);
+  // app.header("Access-Control-Allow-Origin", "*");
+  const io = require("socket.io")(app, {
+    path: "/test",
+    // below are engine.IO options
+    pingInterval: 10000,
+    pingTimeout: 5000,
+    cookie: false
+  });
   io.on("connection", function(socket) {
-    //学生
-    socket.on("message-student", function(data) {
-      //此处to应该是具体老师，在前端发送的data里面添加一个老师id
-      io.emit("message", { roly: "student", to: "teacher", data: data });
+    socket.on("message-client", function(data) {
+      const { role, to, content } = data;
+      const params = [role, to, content];
+      console.log(data);
+      insertMysql(params);
+      io.emit("message", data);
     });
+  });
+  app.listen(12306);
+}
 
-    socket.on("message-college", function(data) {
-      io.emit("message", { roly: "student", to: "college", data: data });
-    });
-
-    socket.on("message-root", function(data) {
-      io.emit("message", { roly: "student", to: "root", data: data });
-    });
-
-    //老师发给学生
-    socket.on("message-teacher", function(data) {
-      io.emit("message", { roly: "teacher", to: "student", data: data });
-    });
+function insertMysql(params) {
+  let query = "INSERT INTO message (fromid,toid,content) values (?,?,?)";
+  connectionMysql(query, params, (err, result) => {
+    if (err) {
+      console.log(`插入数据库 表${message}失败！`);
+    }
   });
 }
 module.exports = messageService;
