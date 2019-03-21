@@ -19,6 +19,9 @@ app.listen(80, () => {
 });
 //启动webSocket
 
+// app.get("/info",web.getInfoWeb);  //?userid=1111;
+app.get("/message", web.messageWb); // ?fromid=123&toid=123
+
 // 文件上传
 app.post("/upload", upLoad.single("file"), web.upLoadWeb);
 // 数据接口
