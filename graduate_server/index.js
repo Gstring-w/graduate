@@ -19,11 +19,12 @@ app.listen(80, () => {
 });
 //启动webSocket
 
-// app.get("/info",web.getInfoWeb);  //?userid=1111;
+app.get("/info", web.getInfoWeb); //?userid=1111; 根据登陆信息提供 选题信息 老师
 app.get("/message", web.messageWb); // ?fromid=123&toid=123
-
+app.get("/allTask", web.getAllTaskWeb);
 // 文件上传
 app.post("/upload", upLoad.single("file"), web.upLoadWeb);
 // 数据接口
 
 app.post("/login", bobyParser.json(), web.loginWeb);
+app.get("/PostTask", web.postTaskWeb); //{ title:title,isTeacher:"false"}
